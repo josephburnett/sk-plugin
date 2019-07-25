@@ -1,0 +1,73 @@
+syntax = "proto3";
+package proto;
+
+message CreateRequest {
+  string yaml = 1;
+  uint32 cluster_server = 2;
+}
+
+message CreateResponse {
+  string err = 1;
+  string key = 2;
+}
+
+message ScaleRequest {
+  string key = 1;
+  int64 time = 2;
+}
+
+message ScaleResponse {
+  string err = 1;
+  int32 rec = 2;
+}
+
+message Stat {
+  int64 time = 1;
+  string pod_name = 2;
+  string metric = 3;
+  int32 value = 4;
+}
+
+message StatRequest {
+  string key = 1;
+  repeated Stat stat = 2;
+}
+
+message StatResponse {
+  string err = 1;
+}
+
+message DeleteRequest {
+  string key = 1;
+}
+
+message DeleteResponse {
+  string err = 1;
+}
+
+message ListPodsRequest {
+  string key = 1;
+}
+
+message Pod {
+  string name = 1;
+  string state = 2;
+  int64 last_transition = 3;
+  int32 cpu_request = 4;
+}
+
+message ListPodsResponse {
+  string err = 1;
+  repeated Pod pod = 2;
+}
+
+service Autoscaler {
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc Scale(ScaleRequest) returns (ScaleResponse);
+  rpc Stat(StatRequest) returns (StatResponse);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
+
+service Cluster {
+  rpc ListPods(ListPodsRequest) returns (ListPodsResponse);
+}
