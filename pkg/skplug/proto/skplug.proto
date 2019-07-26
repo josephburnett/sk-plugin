@@ -45,9 +45,7 @@ message DeleteResponse {
   string err = 1;
 }
 
-message ListPodsRequest {
-  string key = 1;
-}
+message ListPodsRequest {}
 
 message Pod {
   string name = 1;
