@@ -4,8 +4,12 @@
 package proto
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -626,4 +630,264 @@ var fileDescriptor_a95933fe5266f40f = []byte{
 	0xbf, 0x8e, 0xbd, 0x87, 0x93, 0x5a, 0x30, 0x76, 0x41, 0xd9, 0x07, 0x7e, 0xce, 0x5e, 0xfc, 0x83,
 	0x7b, 0x9e, 0x9f, 0x03, 0x87, 0x5f, 0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x9a, 0x8a, 0x26, 0x6b,
 	0x16, 0x04, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// AutoscalerClient is the client API for Autoscaler service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type AutoscalerClient interface {
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	Scale(ctx context.Context, in *ScaleRequest, opts ...grpc.CallOption) (*ScaleResponse, error)
+	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
+	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+}
+
+type autoscalerClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewAutoscalerClient(cc *grpc.ClientConn) AutoscalerClient {
+	return &autoscalerClient{cc}
+}
+
+func (c *autoscalerClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	out := new(CreateResponse)
+	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *autoscalerClient) Scale(ctx context.Context, in *ScaleRequest, opts ...grpc.CallOption) (*ScaleResponse, error) {
+	out := new(ScaleResponse)
+	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Scale", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *autoscalerClient) Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error) {
+	out := new(StatResponse)
+	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Stat", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *autoscalerClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AutoscalerServer is the server API for Autoscaler service.
+type AutoscalerServer interface {
+	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	Scale(context.Context, *ScaleRequest) (*ScaleResponse, error)
+	Stat(context.Context, *StatRequest) (*StatResponse, error)
+	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+}
+
+// UnimplementedAutoscalerServer can be embedded to have forward compatible implementations.
+type UnimplementedAutoscalerServer struct {
+}
+
+func (*UnimplementedAutoscalerServer) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (*UnimplementedAutoscalerServer) Scale(ctx context.Context, req *ScaleRequest) (*ScaleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Scale not implemented")
+}
+func (*UnimplementedAutoscalerServer) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
+}
+func (*UnimplementedAutoscalerServer) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+
+func RegisterAutoscalerServer(s *grpc.Server, srv AutoscalerServer) {
+	s.RegisterService(&_Autoscaler_serviceDesc, srv)
+}
+
+func _Autoscaler_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AutoscalerServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Autoscaler/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AutoscalerServer).Create(ctx, req.(*CreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Autoscaler_Scale_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScaleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AutoscalerServer).Scale(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Autoscaler/Scale",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AutoscalerServer).Scale(ctx, req.(*ScaleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Autoscaler_Stat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AutoscalerServer).Stat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Autoscaler/Stat",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AutoscalerServer).Stat(ctx, req.(*StatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Autoscaler_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AutoscalerServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Autoscaler/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AutoscalerServer).Delete(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Autoscaler_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.Autoscaler",
+	HandlerType: (*AutoscalerServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _Autoscaler_Create_Handler,
+		},
+		{
+			MethodName: "Scale",
+			Handler:    _Autoscaler_Scale_Handler,
+		},
+		{
+			MethodName: "Stat",
+			Handler:    _Autoscaler_Stat_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _Autoscaler_Delete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "skplug.proto",
+}
+
+// ClusterClient is the client API for Cluster service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type ClusterClient interface {
+	ListPods(ctx context.Context, in *ListPodsRequest, opts ...grpc.CallOption) (*ListPodsResponse, error)
+}
+
+type clusterClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewClusterClient(cc *grpc.ClientConn) ClusterClient {
+	return &clusterClient{cc}
+}
+
+func (c *clusterClient) ListPods(ctx context.Context, in *ListPodsRequest, opts ...grpc.CallOption) (*ListPodsResponse, error) {
+	out := new(ListPodsResponse)
+	err := c.cc.Invoke(ctx, "/proto.Cluster/ListPods", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ClusterServer is the server API for Cluster service.
+type ClusterServer interface {
+	ListPods(context.Context, *ListPodsRequest) (*ListPodsResponse, error)
+}
+
+// UnimplementedClusterServer can be embedded to have forward compatible implementations.
+type UnimplementedClusterServer struct {
+}
+
+func (*UnimplementedClusterServer) ListPods(ctx context.Context, req *ListPodsRequest) (*ListPodsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPods not implemented")
+}
+
+func RegisterClusterServer(s *grpc.Server, srv ClusterServer) {
+	s.RegisterService(&_Cluster_serviceDesc, srv)
+}
+
+func _Cluster_ListPods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPodsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClusterServer).ListPods(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Cluster/ListPods",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClusterServer).ListPods(ctx, req.(*ListPodsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Cluster_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.Cluster",
+	HandlerType: (*ClusterServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListPods",
+			Handler:    _Cluster_ListPods_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "skplug.proto",
 }
