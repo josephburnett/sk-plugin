@@ -24,192 +24,277 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type CreateRequest struct {
-	Yaml                 string   `protobuf:"bytes,1,opt,name=yaml,proto3" json:"yaml,omitempty"`
-	ClusterServer        uint32   `protobuf:"varint,2,opt,name=cluster_server,json=clusterServer,proto3" json:"cluster_server,omitempty"`
+type EventRequest_EventType int32
+
+const (
+	EventRequest_CREATE EventRequest_EventType = 0
+	EventRequest_UPDATE EventRequest_EventType = 1
+	EventRequest_DELETE EventRequest_EventType = 2
+)
+
+var EventRequest_EventType_name = map[int32]string{
+	0: "CREATE",
+	1: "UPDATE",
+	2: "DELETE",
+}
+
+var EventRequest_EventType_value = map[string]int32{
+	"CREATE": 0,
+	"UPDATE": 1,
+	"DELETE": 2,
+}
+
+func (x EventRequest_EventType) String() string {
+	return proto.EnumName(EventRequest_EventType_name, int32(x))
+}
+
+func (EventRequest_EventType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_a95933fe5266f40f, []int{3, 0}
+}
+
+type Empty struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CreateRequest) Reset()         { *m = CreateRequest{} }
-func (m *CreateRequest) String() string { return proto.CompactTextString(m) }
-func (*CreateRequest) ProtoMessage()    {}
-func (*CreateRequest) Descriptor() ([]byte, []int) {
+func (m *Empty) Reset()         { *m = Empty{} }
+func (m *Empty) String() string { return proto.CompactTextString(m) }
+func (*Empty) ProtoMessage()    {}
+func (*Empty) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a95933fe5266f40f, []int{0}
 }
 
-func (m *CreateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateRequest.Unmarshal(m, b)
+func (m *Empty) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Empty.Unmarshal(m, b)
 }
-func (m *CreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateRequest.Marshal(b, m, deterministic)
+func (m *Empty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Empty.Marshal(b, m, deterministic)
 }
-func (m *CreateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateRequest.Merge(m, src)
+func (m *Empty) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Empty.Merge(m, src)
 }
-func (m *CreateRequest) XXX_Size() int {
-	return xxx_messageInfo_CreateRequest.Size(m)
+func (m *Empty) XXX_Size() int {
+	return xxx_messageInfo_Empty.Size(m)
 }
-func (m *CreateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateRequest.DiscardUnknown(m)
+func (m *Empty) XXX_DiscardUnknown() {
+	xxx_messageInfo_Empty.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateRequest proto.InternalMessageInfo
+var xxx_messageInfo_Empty proto.InternalMessageInfo
 
-func (m *CreateRequest) GetYaml() string {
+type Autoscaler struct {
+	Type                 string   `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Yaml                 string   `protobuf:"bytes,2,opt,name=yaml,proto3" json:"yaml,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Autoscaler) Reset()         { *m = Autoscaler{} }
+func (m *Autoscaler) String() string { return proto.CompactTextString(m) }
+func (*Autoscaler) ProtoMessage()    {}
+func (*Autoscaler) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a95933fe5266f40f, []int{1}
+}
+
+func (m *Autoscaler) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Autoscaler.Unmarshal(m, b)
+}
+func (m *Autoscaler) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Autoscaler.Marshal(b, m, deterministic)
+}
+func (m *Autoscaler) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Autoscaler.Merge(m, src)
+}
+func (m *Autoscaler) XXX_Size() int {
+	return xxx_messageInfo_Autoscaler.Size(m)
+}
+func (m *Autoscaler) XXX_DiscardUnknown() {
+	xxx_messageInfo_Autoscaler.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Autoscaler proto.InternalMessageInfo
+
+func (m *Autoscaler) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *Autoscaler) GetYaml() string {
 	if m != nil {
 		return m.Yaml
 	}
 	return ""
 }
 
-func (m *CreateRequest) GetClusterServer() uint32 {
+type Pod struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	State                string   `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`
+	LastTransition       int64    `protobuf:"varint,3,opt,name=last_transition,json=lastTransition,proto3" json:"last_transition,omitempty"`
+	CpuRequest           int32    `protobuf:"varint,4,opt,name=cpu_request,json=cpuRequest,proto3" json:"cpu_request,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Pod) Reset()         { *m = Pod{} }
+func (m *Pod) String() string { return proto.CompactTextString(m) }
+func (*Pod) ProtoMessage()    {}
+func (*Pod) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a95933fe5266f40f, []int{2}
+}
+
+func (m *Pod) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Pod.Unmarshal(m, b)
+}
+func (m *Pod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Pod.Marshal(b, m, deterministic)
+}
+func (m *Pod) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Pod.Merge(m, src)
+}
+func (m *Pod) XXX_Size() int {
+	return xxx_messageInfo_Pod.Size(m)
+}
+func (m *Pod) XXX_DiscardUnknown() {
+	xxx_messageInfo_Pod.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Pod proto.InternalMessageInfo
+
+func (m *Pod) GetName() string {
 	if m != nil {
-		return m.ClusterServer
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Pod) GetState() string {
+	if m != nil {
+		return m.State
+	}
+	return ""
+}
+
+func (m *Pod) GetLastTransition() int64 {
+	if m != nil {
+		return m.LastTransition
 	}
 	return 0
 }
 
-type CreateResponse struct {
-	Err                  string   `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
-	Key                  string   `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CreateResponse) Reset()         { *m = CreateResponse{} }
-func (m *CreateResponse) String() string { return proto.CompactTextString(m) }
-func (*CreateResponse) ProtoMessage()    {}
-func (*CreateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{1}
-}
-
-func (m *CreateResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreateResponse.Unmarshal(m, b)
-}
-func (m *CreateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreateResponse.Marshal(b, m, deterministic)
-}
-func (m *CreateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateResponse.Merge(m, src)
-}
-func (m *CreateResponse) XXX_Size() int {
-	return xxx_messageInfo_CreateResponse.Size(m)
-}
-func (m *CreateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CreateResponse proto.InternalMessageInfo
-
-func (m *CreateResponse) GetErr() string {
+func (m *Pod) GetCpuRequest() int32 {
 	if m != nil {
-		return m.Err
+		return m.CpuRequest
+	}
+	return 0
+}
+
+type EventRequest struct {
+	Partition string                 `protobuf:"bytes,1,opt,name=partition,proto3" json:"partition,omitempty"`
+	Time      int64                  `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
+	Type      EventRequest_EventType `protobuf:"varint,3,opt,name=type,proto3,enum=proto.EventRequest_EventType" json:"type,omitempty"`
+	// Types that are valid to be assigned to ObjectOneof:
+	//	*EventRequest_Autoscaler
+	//	*EventRequest_Pod
+	ObjectOneof          isEventRequest_ObjectOneof `protobuf_oneof:"object_oneof"`
+	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
+	XXX_unrecognized     []byte                     `json:"-"`
+	XXX_sizecache        int32                      `json:"-"`
+}
+
+func (m *EventRequest) Reset()         { *m = EventRequest{} }
+func (m *EventRequest) String() string { return proto.CompactTextString(m) }
+func (*EventRequest) ProtoMessage()    {}
+func (*EventRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a95933fe5266f40f, []int{3}
+}
+
+func (m *EventRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EventRequest.Unmarshal(m, b)
+}
+func (m *EventRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EventRequest.Marshal(b, m, deterministic)
+}
+func (m *EventRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventRequest.Merge(m, src)
+}
+func (m *EventRequest) XXX_Size() int {
+	return xxx_messageInfo_EventRequest.Size(m)
+}
+func (m *EventRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventRequest proto.InternalMessageInfo
+
+func (m *EventRequest) GetPartition() string {
+	if m != nil {
+		return m.Partition
 	}
 	return ""
 }
 
-func (m *CreateResponse) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-type ScaleRequest struct {
-	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Time                 int64    `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ScaleRequest) Reset()         { *m = ScaleRequest{} }
-func (m *ScaleRequest) String() string { return proto.CompactTextString(m) }
-func (*ScaleRequest) ProtoMessage()    {}
-func (*ScaleRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{2}
-}
-
-func (m *ScaleRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ScaleRequest.Unmarshal(m, b)
-}
-func (m *ScaleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ScaleRequest.Marshal(b, m, deterministic)
-}
-func (m *ScaleRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ScaleRequest.Merge(m, src)
-}
-func (m *ScaleRequest) XXX_Size() int {
-	return xxx_messageInfo_ScaleRequest.Size(m)
-}
-func (m *ScaleRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ScaleRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ScaleRequest proto.InternalMessageInfo
-
-func (m *ScaleRequest) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-func (m *ScaleRequest) GetTime() int64 {
+func (m *EventRequest) GetTime() int64 {
 	if m != nil {
 		return m.Time
 	}
 	return 0
 }
 
-type ScaleResponse struct {
-	Err                  string   `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
-	Rec                  int32    `protobuf:"varint,2,opt,name=rec,proto3" json:"rec,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ScaleResponse) Reset()         { *m = ScaleResponse{} }
-func (m *ScaleResponse) String() string { return proto.CompactTextString(m) }
-func (*ScaleResponse) ProtoMessage()    {}
-func (*ScaleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{3}
-}
-
-func (m *ScaleResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ScaleResponse.Unmarshal(m, b)
-}
-func (m *ScaleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ScaleResponse.Marshal(b, m, deterministic)
-}
-func (m *ScaleResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ScaleResponse.Merge(m, src)
-}
-func (m *ScaleResponse) XXX_Size() int {
-	return xxx_messageInfo_ScaleResponse.Size(m)
-}
-func (m *ScaleResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ScaleResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ScaleResponse proto.InternalMessageInfo
-
-func (m *ScaleResponse) GetErr() string {
+func (m *EventRequest) GetType() EventRequest_EventType {
 	if m != nil {
-		return m.Err
+		return m.Type
 	}
-	return ""
+	return EventRequest_CREATE
 }
 
-func (m *ScaleResponse) GetRec() int32 {
+type isEventRequest_ObjectOneof interface {
+	isEventRequest_ObjectOneof()
+}
+
+type EventRequest_Autoscaler struct {
+	Autoscaler *Autoscaler `protobuf:"bytes,4,opt,name=autoscaler,proto3,oneof"`
+}
+
+type EventRequest_Pod struct {
+	Pod *Pod `protobuf:"bytes,5,opt,name=pod,proto3,oneof"`
+}
+
+func (*EventRequest_Autoscaler) isEventRequest_ObjectOneof() {}
+
+func (*EventRequest_Pod) isEventRequest_ObjectOneof() {}
+
+func (m *EventRequest) GetObjectOneof() isEventRequest_ObjectOneof {
 	if m != nil {
-		return m.Rec
+		return m.ObjectOneof
 	}
-	return 0
+	return nil
+}
+
+func (m *EventRequest) GetAutoscaler() *Autoscaler {
+	if x, ok := m.GetObjectOneof().(*EventRequest_Autoscaler); ok {
+		return x.Autoscaler
+	}
+	return nil
+}
+
+func (m *EventRequest) GetPod() *Pod {
+	if x, ok := m.GetObjectOneof().(*EventRequest_Pod); ok {
+		return x.Pod
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*EventRequest) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*EventRequest_Autoscaler)(nil),
+		(*EventRequest_Pod)(nil),
+	}
 }
 
 type Stat struct {
@@ -276,7 +361,7 @@ func (m *Stat) GetValue() int32 {
 }
 
 type StatRequest struct {
-	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Partition            string   `protobuf:"bytes,1,opt,name=partition,proto3" json:"partition,omitempty"`
 	Stat                 []*Stat  `protobuf:"bytes,2,rep,name=stat,proto3" json:"stat,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -308,9 +393,9 @@ func (m *StatRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_StatRequest proto.InternalMessageInfo
 
-func (m *StatRequest) GetKey() string {
+func (m *StatRequest) GetPartition() string {
 	if m != nil {
-		return m.Key
+		return m.Partition
 	}
 	return ""
 }
@@ -322,314 +407,138 @@ func (m *StatRequest) GetStat() []*Stat {
 	return nil
 }
 
-type StatResponse struct {
-	Err                  string   `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
+type ScaleRequest struct {
+	Partition            string   `protobuf:"bytes,1,opt,name=partition,proto3" json:"partition,omitempty"`
+	Time                 int64    `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *StatResponse) Reset()         { *m = StatResponse{} }
-func (m *StatResponse) String() string { return proto.CompactTextString(m) }
-func (*StatResponse) ProtoMessage()    {}
-func (*StatResponse) Descriptor() ([]byte, []int) {
+func (m *ScaleRequest) Reset()         { *m = ScaleRequest{} }
+func (m *ScaleRequest) String() string { return proto.CompactTextString(m) }
+func (*ScaleRequest) ProtoMessage()    {}
+func (*ScaleRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a95933fe5266f40f, []int{6}
 }
 
-func (m *StatResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_StatResponse.Unmarshal(m, b)
+func (m *ScaleRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ScaleRequest.Unmarshal(m, b)
 }
-func (m *StatResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_StatResponse.Marshal(b, m, deterministic)
+func (m *ScaleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ScaleRequest.Marshal(b, m, deterministic)
 }
-func (m *StatResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StatResponse.Merge(m, src)
+func (m *ScaleRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ScaleRequest.Merge(m, src)
 }
-func (m *StatResponse) XXX_Size() int {
-	return xxx_messageInfo_StatResponse.Size(m)
+func (m *ScaleRequest) XXX_Size() int {
+	return xxx_messageInfo_ScaleRequest.Size(m)
 }
-func (m *StatResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_StatResponse.DiscardUnknown(m)
+func (m *ScaleRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ScaleRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_StatResponse proto.InternalMessageInfo
+var xxx_messageInfo_ScaleRequest proto.InternalMessageInfo
 
-func (m *StatResponse) GetErr() string {
+func (m *ScaleRequest) GetPartition() string {
 	if m != nil {
-		return m.Err
+		return m.Partition
 	}
 	return ""
 }
 
-type DeleteRequest struct {
-	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+func (m *ScaleRequest) GetTime() int64 {
+	if m != nil {
+		return m.Time
+	}
+	return 0
+}
+
+type ScaleResponse struct {
+	Rec                  int32    `protobuf:"varint,1,opt,name=rec,proto3" json:"rec,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *DeleteRequest) Reset()         { *m = DeleteRequest{} }
-func (m *DeleteRequest) String() string { return proto.CompactTextString(m) }
-func (*DeleteRequest) ProtoMessage()    {}
-func (*DeleteRequest) Descriptor() ([]byte, []int) {
+func (m *ScaleResponse) Reset()         { *m = ScaleResponse{} }
+func (m *ScaleResponse) String() string { return proto.CompactTextString(m) }
+func (*ScaleResponse) ProtoMessage()    {}
+func (*ScaleResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a95933fe5266f40f, []int{7}
 }
 
-func (m *DeleteRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteRequest.Unmarshal(m, b)
+func (m *ScaleResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ScaleResponse.Unmarshal(m, b)
 }
-func (m *DeleteRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteRequest.Marshal(b, m, deterministic)
+func (m *ScaleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ScaleResponse.Marshal(b, m, deterministic)
 }
-func (m *DeleteRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteRequest.Merge(m, src)
+func (m *ScaleResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ScaleResponse.Merge(m, src)
 }
-func (m *DeleteRequest) XXX_Size() int {
-	return xxx_messageInfo_DeleteRequest.Size(m)
+func (m *ScaleResponse) XXX_Size() int {
+	return xxx_messageInfo_ScaleResponse.Size(m)
 }
-func (m *DeleteRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteRequest.DiscardUnknown(m)
+func (m *ScaleResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ScaleResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DeleteRequest proto.InternalMessageInfo
+var xxx_messageInfo_ScaleResponse proto.InternalMessageInfo
 
-func (m *DeleteRequest) GetKey() string {
+func (m *ScaleResponse) GetRec() int32 {
 	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-type DeleteResponse struct {
-	Err                  string   `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DeleteResponse) Reset()         { *m = DeleteResponse{} }
-func (m *DeleteResponse) String() string { return proto.CompactTextString(m) }
-func (*DeleteResponse) ProtoMessage()    {}
-func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{8}
-}
-
-func (m *DeleteResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteResponse.Unmarshal(m, b)
-}
-func (m *DeleteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteResponse.Marshal(b, m, deterministic)
-}
-func (m *DeleteResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteResponse.Merge(m, src)
-}
-func (m *DeleteResponse) XXX_Size() int {
-	return xxx_messageInfo_DeleteResponse.Size(m)
-}
-func (m *DeleteResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteResponse proto.InternalMessageInfo
-
-func (m *DeleteResponse) GetErr() string {
-	if m != nil {
-		return m.Err
-	}
-	return ""
-}
-
-type ListPodsRequest struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ListPodsRequest) Reset()         { *m = ListPodsRequest{} }
-func (m *ListPodsRequest) String() string { return proto.CompactTextString(m) }
-func (*ListPodsRequest) ProtoMessage()    {}
-func (*ListPodsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{9}
-}
-
-func (m *ListPodsRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListPodsRequest.Unmarshal(m, b)
-}
-func (m *ListPodsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListPodsRequest.Marshal(b, m, deterministic)
-}
-func (m *ListPodsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListPodsRequest.Merge(m, src)
-}
-func (m *ListPodsRequest) XXX_Size() int {
-	return xxx_messageInfo_ListPodsRequest.Size(m)
-}
-func (m *ListPodsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListPodsRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ListPodsRequest proto.InternalMessageInfo
-
-type Pod struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	State                string   `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`
-	LastTransition       int64    `protobuf:"varint,3,opt,name=last_transition,json=lastTransition,proto3" json:"last_transition,omitempty"`
-	CpuRequest           int32    `protobuf:"varint,4,opt,name=cpu_request,json=cpuRequest,proto3" json:"cpu_request,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *Pod) Reset()         { *m = Pod{} }
-func (m *Pod) String() string { return proto.CompactTextString(m) }
-func (*Pod) ProtoMessage()    {}
-func (*Pod) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{10}
-}
-
-func (m *Pod) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Pod.Unmarshal(m, b)
-}
-func (m *Pod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Pod.Marshal(b, m, deterministic)
-}
-func (m *Pod) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Pod.Merge(m, src)
-}
-func (m *Pod) XXX_Size() int {
-	return xxx_messageInfo_Pod.Size(m)
-}
-func (m *Pod) XXX_DiscardUnknown() {
-	xxx_messageInfo_Pod.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Pod proto.InternalMessageInfo
-
-func (m *Pod) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Pod) GetState() string {
-	if m != nil {
-		return m.State
-	}
-	return ""
-}
-
-func (m *Pod) GetLastTransition() int64 {
-	if m != nil {
-		return m.LastTransition
+		return m.Rec
 	}
 	return 0
-}
-
-func (m *Pod) GetCpuRequest() int32 {
-	if m != nil {
-		return m.CpuRequest
-	}
-	return 0
-}
-
-type ListPodsResponse struct {
-	Err                  string   `protobuf:"bytes,1,opt,name=err,proto3" json:"err,omitempty"`
-	Pod                  []*Pod   `protobuf:"bytes,2,rep,name=pod,proto3" json:"pod,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ListPodsResponse) Reset()         { *m = ListPodsResponse{} }
-func (m *ListPodsResponse) String() string { return proto.CompactTextString(m) }
-func (*ListPodsResponse) ProtoMessage()    {}
-func (*ListPodsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a95933fe5266f40f, []int{11}
-}
-
-func (m *ListPodsResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListPodsResponse.Unmarshal(m, b)
-}
-func (m *ListPodsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListPodsResponse.Marshal(b, m, deterministic)
-}
-func (m *ListPodsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListPodsResponse.Merge(m, src)
-}
-func (m *ListPodsResponse) XXX_Size() int {
-	return xxx_messageInfo_ListPodsResponse.Size(m)
-}
-func (m *ListPodsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListPodsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ListPodsResponse proto.InternalMessageInfo
-
-func (m *ListPodsResponse) GetErr() string {
-	if m != nil {
-		return m.Err
-	}
-	return ""
-}
-
-func (m *ListPodsResponse) GetPod() []*Pod {
-	if m != nil {
-		return m.Pod
-	}
-	return nil
 }
 
 func init() {
-	proto.RegisterType((*CreateRequest)(nil), "proto.CreateRequest")
-	proto.RegisterType((*CreateResponse)(nil), "proto.CreateResponse")
-	proto.RegisterType((*ScaleRequest)(nil), "proto.ScaleRequest")
-	proto.RegisterType((*ScaleResponse)(nil), "proto.ScaleResponse")
+	proto.RegisterEnum("proto.EventRequest_EventType", EventRequest_EventType_name, EventRequest_EventType_value)
+	proto.RegisterType((*Empty)(nil), "proto.Empty")
+	proto.RegisterType((*Autoscaler)(nil), "proto.Autoscaler")
+	proto.RegisterType((*Pod)(nil), "proto.Pod")
+	proto.RegisterType((*EventRequest)(nil), "proto.EventRequest")
 	proto.RegisterType((*Stat)(nil), "proto.Stat")
 	proto.RegisterType((*StatRequest)(nil), "proto.StatRequest")
-	proto.RegisterType((*StatResponse)(nil), "proto.StatResponse")
-	proto.RegisterType((*DeleteRequest)(nil), "proto.DeleteRequest")
-	proto.RegisterType((*DeleteResponse)(nil), "proto.DeleteResponse")
-	proto.RegisterType((*ListPodsRequest)(nil), "proto.ListPodsRequest")
-	proto.RegisterType((*Pod)(nil), "proto.Pod")
-	proto.RegisterType((*ListPodsResponse)(nil), "proto.ListPodsResponse")
+	proto.RegisterType((*ScaleRequest)(nil), "proto.ScaleRequest")
+	proto.RegisterType((*ScaleResponse)(nil), "proto.ScaleResponse")
 }
 
 func init() { proto.RegisterFile("skplug.proto", fileDescriptor_a95933fe5266f40f) }
 
 var fileDescriptor_a95933fe5266f40f = []byte{
-	// 484 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0x51, 0x6f, 0xd3, 0x30,
-	0x10, 0x56, 0x96, 0xb6, 0x5b, 0xaf, 0x4d, 0x37, 0xbc, 0x32, 0x42, 0x85, 0xb4, 0x62, 0x09, 0xd1,
-	0xa7, 0x21, 0x75, 0xdb, 0x13, 0x2f, 0xc0, 0x10, 0x0f, 0x08, 0xa1, 0x2a, 0xe5, 0xbd, 0x32, 0xc9,
-	0x09, 0x45, 0x4b, 0xeb, 0x60, 0x3b, 0x93, 0xfa, 0x6b, 0xf9, 0x2b, 0xc8, 0xf6, 0x25, 0x5b, 0x8a,
-	0xc2, 0x53, 0xce, 0x9f, 0xef, 0xbe, 0x3b, 0x7f, 0xdf, 0x05, 0xc6, 0xfa, 0xbe, 0x2c, 0xaa, 0x5f,
-	0x57, 0xa5, 0x92, 0x46, 0xb2, 0xbe, 0xfb, 0xf0, 0xaf, 0x10, 0xdd, 0x29, 0x14, 0x06, 0x13, 0xfc,
-	0x5d, 0xa1, 0x36, 0x8c, 0x41, 0x6f, 0x2f, 0xb6, 0x45, 0x1c, 0xcc, 0x83, 0xc5, 0x30, 0x71, 0x31,
-	0x7b, 0x03, 0x93, 0xb4, 0xa8, 0xb4, 0x41, 0xb5, 0xd1, 0xa8, 0x1e, 0x50, 0xc5, 0x47, 0xf3, 0x60,
-	0x11, 0x25, 0x11, 0xa1, 0x6b, 0x07, 0xf2, 0x1b, 0x98, 0xd4, 0x5c, 0xba, 0x94, 0x3b, 0x8d, 0xec,
-	0x0c, 0x42, 0x54, 0x8a, 0xb8, 0x6c, 0x68, 0x91, 0x7b, 0xdc, 0xbb, 0xfa, 0x61, 0x62, 0x43, 0x7e,
-	0x03, 0xe3, 0x75, 0x2a, 0x8a, 0x66, 0x00, 0xca, 0x08, 0x9a, 0x0c, 0x3b, 0x92, 0xc9, 0xb7, 0xe8,
-	0x8a, 0xc2, 0xc4, 0xc5, 0xfc, 0x1a, 0x22, 0xaa, 0xfa, 0x5f, 0x2b, 0x85, 0xa9, 0xab, 0xea, 0x27,
-	0x36, 0xe4, 0x29, 0xf4, 0xd6, 0x46, 0x98, 0x86, 0x30, 0x78, 0x24, 0x64, 0x2f, 0xe1, 0xa4, 0x94,
-	0xd9, 0x66, 0x27, 0xa8, 0xd1, 0x30, 0x39, 0x2e, 0x65, 0xf6, 0x5d, 0x6c, 0x91, 0x5d, 0xc0, 0x60,
-	0x8b, 0x46, 0xe5, 0x69, 0x1c, 0xba, 0x0b, 0x3a, 0xb1, 0x29, 0xf4, 0x1f, 0x44, 0x51, 0x61, 0xdc,
-	0x73, 0x2d, 0xfc, 0x81, 0x7f, 0x80, 0x91, 0x6d, 0xd2, 0xfd, 0x9c, 0x4b, 0xe8, 0x69, 0x23, 0x4c,
-	0x7c, 0x34, 0x0f, 0x17, 0xa3, 0xe5, 0xc8, 0xfb, 0x71, 0xe5, 0x6a, 0xdc, 0x05, 0x9f, 0xc3, 0xd8,
-	0x33, 0x74, 0x3d, 0x8d, 0xbf, 0x86, 0xe8, 0x33, 0x16, 0x68, 0xba, 0x45, 0xe3, 0x1c, 0x26, 0x75,
-	0x4a, 0x27, 0xcd, 0x33, 0x38, 0xfd, 0x96, 0x6b, 0xb3, 0x92, 0x99, 0x26, 0x22, 0xbe, 0x87, 0x70,
-	0x25, 0x33, 0xab, 0x90, 0x53, 0x82, 0xb6, 0xc0, 0xc6, 0xf6, 0xb9, 0x76, 0xbc, 0x5a, 0x1e, 0x7f,
-	0x60, 0x6f, 0xe1, 0xb4, 0x10, 0xda, 0x6c, 0x8c, 0x12, 0x3b, 0x9d, 0x9b, 0x5c, 0xee, 0x9c, 0x4a,
-	0x61, 0x32, 0xb1, 0xf0, 0x8f, 0x06, 0x65, 0x97, 0x30, 0x4a, 0xcb, 0x6a, 0xa3, 0x7c, 0x23, 0xd2,
-	0x0c, 0xd2, 0xb2, 0xaa, 0x5b, 0x7f, 0x82, 0xb3, 0xc7, 0x69, 0x3a, 0x5d, 0x7d, 0x05, 0x61, 0x29,
-	0x33, 0x12, 0x0f, 0x48, 0xbc, 0x95, 0xcc, 0x12, 0x0b, 0x2f, 0xff, 0x04, 0x00, 0x1f, 0x2b, 0x23,
-	0xb5, 0xdd, 0x0d, 0xc5, 0x6e, 0x61, 0xe0, 0x37, 0x92, 0x4d, 0x29, 0xb3, 0xb5, 0xec, 0xb3, 0xe7,
-	0x07, 0x28, 0x75, 0x5d, 0x42, 0xdf, 0x2d, 0x17, 0x3b, 0xaf, 0xcd, 0x79, 0xb2, 0xa0, 0xb3, 0x69,
-	0x1b, 0xa4, 0x9a, 0x77, 0xf5, 0x6e, 0x3d, 0xf5, 0x93, 0x2a, 0xce, 0x5b, 0x18, 0x15, 0xdc, 0xc2,
-	0xc0, 0x1b, 0xd4, 0xcc, 0xd6, 0xb2, 0xb4, 0x99, 0xad, 0xed, 0xe2, 0xf2, 0x0b, 0x1c, 0xdf, 0xf9,
-	0xbf, 0x8e, 0xbd, 0x87, 0x93, 0x5a, 0x30, 0x76, 0x41, 0xd9, 0x07, 0x7e, 0xce, 0x5e, 0xfc, 0x83,
-	0x7b, 0x9e, 0x9f, 0x03, 0x87, 0x5f, 0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x9a, 0x8a, 0x26, 0x6b,
-	0x16, 0x04, 0x00, 0x00,
+	// 472 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0xc1, 0x6e, 0xd4, 0x30,
+	0x10, 0xdd, 0x6c, 0x36, 0x5b, 0x76, 0x12, 0x96, 0xc5, 0x54, 0x28, 0x54, 0x40, 0x97, 0x5c, 0x88,
+	0x38, 0x14, 0x91, 0xf2, 0x01, 0x14, 0x1a, 0xa9, 0x87, 0x0a, 0xad, 0xdc, 0xe5, 0xbc, 0x72, 0x13,
+	0x53, 0x05, 0x92, 0xd8, 0x24, 0x4e, 0xa5, 0x7c, 0x02, 0x57, 0xbe, 0x18, 0x8d, 0xed, 0xa6, 0x41,
+	0xda, 0x03, 0xea, 0x29, 0x6f, 0x9e, 0xc7, 0xe3, 0x37, 0xef, 0x29, 0x10, 0xb4, 0x3f, 0x65, 0xd9,
+	0xdd, 0x9c, 0xc8, 0x46, 0x28, 0x41, 0x3c, 0xfd, 0x89, 0x0e, 0xc0, 0x4b, 0x2b, 0xa9, 0xfa, 0xe8,
+	0x23, 0xc0, 0x59, 0xa7, 0x44, 0x9b, 0xb1, 0x92, 0x37, 0x84, 0xc0, 0x4c, 0xf5, 0x92, 0x87, 0xce,
+	0xda, 0x89, 0x17, 0x54, 0x63, 0xe4, 0x7a, 0x56, 0x95, 0xe1, 0xd4, 0x70, 0x88, 0xa3, 0x1e, 0xdc,
+	0x8d, 0xc8, 0xf1, 0xa8, 0x66, 0xd5, 0xd0, 0x8e, 0x98, 0x1c, 0x82, 0xd7, 0x2a, 0xa6, 0xb8, 0xed,
+	0x37, 0x05, 0x79, 0x0b, 0x4f, 0x4a, 0xd6, 0xaa, 0x9d, 0x6a, 0x58, 0xdd, 0x16, 0xaa, 0x10, 0x75,
+	0xe8, 0xae, 0x9d, 0xd8, 0xa5, 0x4b, 0xa4, 0xb7, 0x03, 0x4b, 0x8e, 0xc1, 0xcf, 0x64, 0xb7, 0x6b,
+	0xf8, 0xaf, 0x8e, 0xb7, 0x2a, 0x9c, 0xad, 0x9d, 0xd8, 0xa3, 0x90, 0xc9, 0x8e, 0x1a, 0x26, 0xfa,
+	0x3d, 0x85, 0x20, 0xbd, 0xe5, 0xb5, 0xb2, 0x04, 0x79, 0x09, 0x0b, 0xc9, 0x1a, 0x65, 0x86, 0x1a,
+	0x25, 0xf7, 0x84, 0xde, 0xa8, 0xa8, 0x8c, 0x1a, 0x97, 0x6a, 0x4c, 0x3e, 0xd8, 0x2d, 0x51, 0xc1,
+	0x32, 0x79, 0x65, 0x9c, 0x39, 0x19, 0x0f, 0x35, 0xc5, 0xb6, 0x97, 0xdc, 0x9a, 0x70, 0x0a, 0xc0,
+	0x06, 0x9b, 0xb4, 0x2a, 0x3f, 0x79, 0x6a, 0x2f, 0xde, 0xfb, 0x77, 0x31, 0xa1, 0xa3, 0x36, 0xf2,
+	0x1a, 0x5c, 0x29, 0xf2, 0xd0, 0xd3, 0xdd, 0x60, 0xbb, 0x37, 0x22, 0xbf, 0x98, 0x50, 0x3c, 0x88,
+	0xde, 0xc3, 0x62, 0x78, 0x87, 0x00, 0xcc, 0xbf, 0xd0, 0xf4, 0x6c, 0x9b, 0xae, 0x26, 0x88, 0xbf,
+	0x6d, 0xce, 0x11, 0x3b, 0x88, 0xcf, 0xd3, 0xcb, 0x74, 0x9b, 0xae, 0xa6, 0x9f, 0x97, 0x10, 0x88,
+	0xeb, 0x1f, 0x3c, 0x53, 0x3b, 0x51, 0x73, 0xf1, 0x3d, 0xca, 0x60, 0x76, 0xa5, 0x98, 0x1a, 0x96,
+	0x74, 0x46, 0x4b, 0xbe, 0x80, 0x47, 0x52, 0xe4, 0x3b, 0x9d, 0x8f, 0x89, 0xe2, 0x40, 0x8a, 0xfc,
+	0x2b, 0x46, 0xf4, 0x1c, 0xe6, 0x15, 0x57, 0x4d, 0x91, 0x69, 0x07, 0x16, 0xd4, 0x56, 0x18, 0xdd,
+	0x2d, 0x2b, 0x3b, 0x6e, 0x5d, 0x37, 0x45, 0x74, 0x09, 0x3e, 0x3e, 0xf2, 0x7f, 0x76, 0x1f, 0xc3,
+	0x0c, 0x03, 0x0f, 0xa7, 0x6b, 0x37, 0xf6, 0x13, 0xdf, 0xee, 0xac, 0xef, 0xeb, 0x83, 0xe8, 0x13,
+	0x04, 0x57, 0xe8, 0xce, 0x83, 0xd3, 0x8b, 0xde, 0xc0, 0x63, 0x3b, 0xa1, 0x95, 0xa2, 0x6e, 0x39,
+	0x59, 0x81, 0xdb, 0xf0, 0x4c, 0x5f, 0xf6, 0x28, 0xc2, 0xe4, 0x8f, 0x03, 0xf3, 0x4d, 0xd9, 0xdd,
+	0x14, 0x35, 0x79, 0x07, 0x9e, 0xf6, 0x98, 0x3c, 0xdb, 0x13, 0xf3, 0x51, 0x70, 0x47, 0xe2, 0xbf,
+	0x40, 0xe2, 0x3b, 0x3b, 0xc7, 0xb2, 0xf7, 0x76, 0x26, 0xe0, 0x69, 0x0d, 0xc3, 0xd4, 0xf1, 0x4e,
+	0x47, 0x87, 0xff, 0x92, 0x46, 0xe6, 0xf5, 0x5c, 0x93, 0xa7, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff,
+	0xbf, 0x52, 0xba, 0x01, 0x90, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -640,252 +549,144 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// AutoscalerClient is the client API for Autoscaler service.
+// PluginClient is the client API for Plugin service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type AutoscalerClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+type PluginClient interface {
+	Event(ctx context.Context, in *EventRequest, opts ...grpc.CallOption) (*Empty, error)
+	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*Empty, error)
 	Scale(ctx context.Context, in *ScaleRequest, opts ...grpc.CallOption) (*ScaleResponse, error)
-	Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error)
-	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 }
 
-type autoscalerClient struct {
+type pluginClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewAutoscalerClient(cc *grpc.ClientConn) AutoscalerClient {
-	return &autoscalerClient{cc}
+func NewPluginClient(cc *grpc.ClientConn) PluginClient {
+	return &pluginClient{cc}
 }
 
-func (c *autoscalerClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Create", in, out, opts...)
+func (c *pluginClient) Event(ctx context.Context, in *EventRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/proto.Plugin/Event", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *autoscalerClient) Scale(ctx context.Context, in *ScaleRequest, opts ...grpc.CallOption) (*ScaleResponse, error) {
+func (c *pluginClient) Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/proto.Plugin/Stat", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pluginClient) Scale(ctx context.Context, in *ScaleRequest, opts ...grpc.CallOption) (*ScaleResponse, error) {
 	out := new(ScaleResponse)
-	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Scale", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Plugin/Scale", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *autoscalerClient) Stat(ctx context.Context, in *StatRequest, opts ...grpc.CallOption) (*StatResponse, error) {
-	out := new(StatResponse)
-	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Stat", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *autoscalerClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
-	out := new(DeleteResponse)
-	err := c.cc.Invoke(ctx, "/proto.Autoscaler/Delete", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// AutoscalerServer is the server API for Autoscaler service.
-type AutoscalerServer interface {
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+// PluginServer is the server API for Plugin service.
+type PluginServer interface {
+	Event(context.Context, *EventRequest) (*Empty, error)
+	Stat(context.Context, *StatRequest) (*Empty, error)
 	Scale(context.Context, *ScaleRequest) (*ScaleResponse, error)
-	Stat(context.Context, *StatRequest) (*StatResponse, error)
-	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
 }
 
-// UnimplementedAutoscalerServer can be embedded to have forward compatible implementations.
-type UnimplementedAutoscalerServer struct {
+// UnimplementedPluginServer can be embedded to have forward compatible implementations.
+type UnimplementedPluginServer struct {
 }
 
-func (*UnimplementedAutoscalerServer) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (*UnimplementedPluginServer) Event(ctx context.Context, req *EventRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Event not implemented")
 }
-func (*UnimplementedAutoscalerServer) Scale(ctx context.Context, req *ScaleRequest) (*ScaleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Scale not implemented")
-}
-func (*UnimplementedAutoscalerServer) Stat(ctx context.Context, req *StatRequest) (*StatResponse, error) {
+func (*UnimplementedPluginServer) Stat(ctx context.Context, req *StatRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stat not implemented")
 }
-func (*UnimplementedAutoscalerServer) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+func (*UnimplementedPluginServer) Scale(ctx context.Context, req *ScaleRequest) (*ScaleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Scale not implemented")
 }
 
-func RegisterAutoscalerServer(s *grpc.Server, srv AutoscalerServer) {
-	s.RegisterService(&_Autoscaler_serviceDesc, srv)
+func RegisterPluginServer(s *grpc.Server, srv PluginServer) {
+	s.RegisterService(&_Plugin_serviceDesc, srv)
 }
 
-func _Autoscaler_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRequest)
+func _Plugin_Event_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EventRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AutoscalerServer).Create(ctx, in)
+		return srv.(PluginServer).Event(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Autoscaler/Create",
+		FullMethod: "/proto.Plugin/Event",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AutoscalerServer).Create(ctx, req.(*CreateRequest))
+		return srv.(PluginServer).Event(ctx, req.(*EventRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Autoscaler_Scale_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ScaleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AutoscalerServer).Scale(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Autoscaler/Scale",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AutoscalerServer).Scale(ctx, req.(*ScaleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Autoscaler_Stat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Plugin_Stat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AutoscalerServer).Stat(ctx, in)
+		return srv.(PluginServer).Stat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Autoscaler/Stat",
+		FullMethod: "/proto.Plugin/Stat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AutoscalerServer).Stat(ctx, req.(*StatRequest))
+		return srv.(PluginServer).Stat(ctx, req.(*StatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Autoscaler_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRequest)
+func _Plugin_Scale_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScaleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AutoscalerServer).Delete(ctx, in)
+		return srv.(PluginServer).Scale(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Autoscaler/Delete",
+		FullMethod: "/proto.Plugin/Scale",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AutoscalerServer).Delete(ctx, req.(*DeleteRequest))
+		return srv.(PluginServer).Scale(ctx, req.(*ScaleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Autoscaler_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Autoscaler",
-	HandlerType: (*AutoscalerServer)(nil),
+var _Plugin_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.Plugin",
+	HandlerType: (*PluginServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _Autoscaler_Create_Handler,
-		},
-		{
-			MethodName: "Scale",
-			Handler:    _Autoscaler_Scale_Handler,
+			MethodName: "Event",
+			Handler:    _Plugin_Event_Handler,
 		},
 		{
 			MethodName: "Stat",
-			Handler:    _Autoscaler_Stat_Handler,
+			Handler:    _Plugin_Stat_Handler,
 		},
 		{
-			MethodName: "Delete",
-			Handler:    _Autoscaler_Delete_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "skplug.proto",
-}
-
-// ClusterClient is the client API for Cluster service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type ClusterClient interface {
-	ListPods(ctx context.Context, in *ListPodsRequest, opts ...grpc.CallOption) (*ListPodsResponse, error)
-}
-
-type clusterClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewClusterClient(cc *grpc.ClientConn) ClusterClient {
-	return &clusterClient{cc}
-}
-
-func (c *clusterClient) ListPods(ctx context.Context, in *ListPodsRequest, opts ...grpc.CallOption) (*ListPodsResponse, error) {
-	out := new(ListPodsResponse)
-	err := c.cc.Invoke(ctx, "/proto.Cluster/ListPods", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ClusterServer is the server API for Cluster service.
-type ClusterServer interface {
-	ListPods(context.Context, *ListPodsRequest) (*ListPodsResponse, error)
-}
-
-// UnimplementedClusterServer can be embedded to have forward compatible implementations.
-type UnimplementedClusterServer struct {
-}
-
-func (*UnimplementedClusterServer) ListPods(ctx context.Context, req *ListPodsRequest) (*ListPodsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListPods not implemented")
-}
-
-func RegisterClusterServer(s *grpc.Server, srv ClusterServer) {
-	s.RegisterService(&_Cluster_serviceDesc, srv)
-}
-
-func _Cluster_ListPods_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListPodsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ClusterServer).ListPods(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Cluster/ListPods",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClusterServer).ListPods(ctx, req.(*ListPodsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Cluster_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Cluster",
-	HandlerType: (*ClusterServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "ListPods",
-			Handler:    _Cluster_ListPods_Handler,
+			MethodName: "Scale",
+			Handler:    _Plugin_Scale_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

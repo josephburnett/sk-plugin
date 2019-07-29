@@ -1,24 +1,33 @@
 syntax = "proto3";
 package proto;
 
-message CreateRequest {
-  string yaml = 1;
-  uint32 cluster_server = 2;
+message Empty {}
+
+message Autoscaler {
+  string type = 1;
+  string yaml = 2;
 }
 
-message CreateResponse {
-  string err = 1;
-  string key = 2;
+message Pod {
+  string name = 1;
+  string state = 2;
+  int64 last_transition = 3;
+  int32 cpu_request = 4;
 }
 
-message ScaleRequest {
-  string key = 1;
+message EventRequest {
+  string partition = 1;
   int64 time = 2;
-}
-
-message ScaleResponse {
-  string err = 1;
-  int32 rec = 2;
+  enum EventType {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 2;
+  }
+  EventType type = 3;
+  oneof object_oneof {
+    Autoscaler autoscaler = 4;
+    Pod pod = 5;
+  }
 }
 
 message Stat {
@@ -29,43 +38,21 @@ message Stat {
 }
 
 message StatRequest {
-  string key = 1;
+  string partition = 1;
   repeated Stat stat = 2;
 }
 
-message StatResponse {
-  string err = 1;
+message ScaleRequest {
+  string partition = 1;
+  int64 time = 2;
 }
 
-message DeleteRequest {
-  string key = 1;
+message ScaleResponse {
+  int32 rec = 1;
 }
 
-message DeleteResponse {
-  string err = 1;
-}
-
-message ListPodsRequest {}
-
-message Pod {
-  string name = 1;
-  string state = 2;
-  int64 last_transition = 3;
-  int32 cpu_request = 4;
-}
-
-message ListPodsResponse {
-  string err = 1;
-  repeated Pod pod = 2;
-}
-
-service Autoscaler {
-  rpc Create(CreateRequest) returns (CreateResponse);
+service Plugin {
+  rpc Event(EventRequest) returns (Empty);
+  rpc Stat(StatRequest) returns (Empty);
   rpc Scale(ScaleRequest) returns (ScaleResponse);
-  rpc Stat(StatRequest) returns (StatResponse);
-  rpc Delete(DeleteRequest) returns (DeleteResponse);
-}
-
-service Cluster {
-  rpc ListPods(ListPodsRequest) returns (ListPodsResponse);
 }

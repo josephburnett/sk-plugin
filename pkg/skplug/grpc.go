@@ -39,8 +39,8 @@ func (m *GRPCClient) Create(yaml string, c Cluster) (key string, err error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Printf("+%v", resp)
 	if resp.Err != "" {
-		fmt.Printf(resp.Err)
 		// TODO: why do I get a nil point dereference here?
 		return "", fmt.Errorf(resp.Err)
 	}
