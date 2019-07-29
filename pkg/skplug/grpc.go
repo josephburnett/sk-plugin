@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+var _ Autoscaler = &GRPCClient{}
+
 // GRPCClient is an implementation of Autoscaler that talks over RPC.
 type GRPCClient struct {
 	broker *plugin.GRPCBroker
@@ -37,6 +39,11 @@ func (m *GRPCClient) Create(yaml string, c Cluster) (key string, err error) {
 	if err != nil {
 		return "", err
 	}
+	if resp.Err != "" {
+		fmt.Printf(resp.Err)
+		// TODO: why do I get a nil point dereference here?
+		return "", fmt.Errorf(resp.Err)
+	}
 	return resp.Key, nil
 }
 
@@ -54,7 +61,7 @@ func (m *GRPCClient) Scale(key string) (rec int32, err error) {
 	return resp.Rec, nil
 }
 
-func (m *GRPCClient) Stat(key string, stats []*Stat) error {
+func (m *GRPCClient) Stat(stats []*Stat) error {
 	protoStats := make([]*proto.Stat, len(stats))
 	for i, s := range stats {
 		protoStats[i] = &proto.Stat{
@@ -65,7 +72,7 @@ func (m *GRPCClient) Stat(key string, stats []*Stat) error {
 		}
 	}
 	resp, err := m.client.Stat(context.Background(), &proto.StatRequest{
-		Key:  key,
+		Key:  "",
 		Stat: protoStats,
 	})
 	if err != nil {
