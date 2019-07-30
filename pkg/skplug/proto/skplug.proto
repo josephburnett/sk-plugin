@@ -15,14 +15,15 @@ message Pod {
   int32 cpu_request = 4;
 }
 
+enum EventType {
+  CREATE = 0;
+  UPDATE = 1;
+  DELETE = 2;
+}
+
 message EventRequest {
   string partition = 1;
   int64 time = 2;
-  enum EventType {
-    CREATE = 0;
-    UPDATE = 1;
-    DELETE = 2;
-  }
   EventType type = 3;
   oneof object_oneof {
     Autoscaler autoscaler = 4;
@@ -30,10 +31,15 @@ message EventRequest {
   }
 }
 
+enum MetricType {
+  CPU_MILLIS = 0;
+  CONCURRENT_REQUESTS_MILLIS = 1;
+}
+
 message Stat {
   int64 time = 1;
   string pod_name = 2;
-  string metric = 3;
+  MetricType type = 3;
   int32 value = 4;
 }
 

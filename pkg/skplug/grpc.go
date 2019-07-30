@@ -6,213 +6,106 @@ import (
 
 	"github.com/hashicorp/go-plugin"
 	"github.com/josephburnett/sk-plugin/pkg/skplug/proto"
-	"google.golang.org/grpc"
 )
 
-var _ Autoscaler = &GRPCClient{}
+var _ Plugin = &GRPCClient{}
 
-// GRPCClient is an implementation of Autoscaler that talks over RPC.
+// GRPCClient is an implementation of Plugin that talks over RPC.
 type GRPCClient struct {
 	broker *plugin.GRPCBroker
-	client proto.AutoscalerClient
+	client proto.PluginClient
 }
 
-func (m *GRPCClient) Create(yaml string, c Cluster) (key string, err error) {
-	clusterServer := &GRPCClusterServer{Impl: c}
+type Autoscaler proto.Autoscaler
+type Pod proto.Pod
+type Object interface {
+	isObject()
+}
 
-	var s *grpc.Server
-	serverFunc := func(opts []grpc.ServerOption) *grpc.Server {
-		s = grpc.NewServer(opts...)
-		proto.RegisterClusterServer(s, clusterServer)
+func (o *Autoscaler) isObject() {}
+func (o *Pod) isObject()        {}
 
-		return s
+var _ Object = &Autoscaler{}
+var _ Object = &Pod{}
+
+func (m *GRPCClient) Event(partition string, time int64, typ proto.EventType, object Object) error {
+	req := &proto.EventRequest{
+		Partition: partition,
+		Time:      time,
+		Type:      typ,
 	}
+	switch v := object.(type) {
+	case *Autoscaler:
+		req.ObjectOneof = &proto.EventRequest_Autoscaler{(*proto.Autoscaler)(v)}
+	case *Pod:
+		req.ObjectOneof = &proto.EventRequest_Pod{(*proto.Pod)(v)}
+	default:
+		return fmt.Errorf("unknown type: %T", object)
+	}
+	_, err := m.client.Event(context.Background(), req)
+	return err
+}
 
-	brokerID := m.broker.NextId()
-	go m.broker.AcceptAndServe(brokerID, serverFunc)
-	defer s.Stop()
-
-	resp, err := m.client.Create(context.Background(), &proto.CreateRequest{
-		Yaml:          yaml,
-		ClusterServer: brokerID,
+func (m *GRPCClient) Stat(partition string, stats []*proto.Stat) error {
+	_, err := m.client.Stat(context.Background(), &proto.StatRequest{
+		Partition: partition,
+		Stat:      stats,
 	})
-	if err != nil {
-		return "", err
-	}
-	fmt.Printf("+%v", resp)
-	if resp.Err != "" {
-		// TODO: why do I get a nil point dereference here?
-		return "", fmt.Errorf(resp.Err)
-	}
-	return resp.Key, nil
+	return err
 }
 
-func (m *GRPCClient) Scale(key string) (rec int32, err error) {
+func (m *GRPCClient) Scale(partition string, time int64) (rec int32, err error) {
 	resp, err := m.client.Scale(context.Background(), &proto.ScaleRequest{
-		Key: key,
+		Partition: partition,
+		Time:      time,
 	})
 	if err != nil {
 		return 0, err
 	}
-	if resp.Err != "" {
-		err = fmt.Errorf(resp.Err)
-		return
-	}
 	return resp.Rec, nil
 }
 
-func (m *GRPCClient) Stat(stats []*Stat) error {
-	protoStats := make([]*proto.Stat, len(stats))
-	for i, s := range stats {
-		protoStats[i] = &proto.Stat{
-			Time:    s.Time,
-			PodName: s.PodName,
-			Metric:  s.Metric,
-			Value:   s.Value,
-		}
-	}
-	resp, err := m.client.Stat(context.Background(), &proto.StatRequest{
-		Key:  "",
-		Stat: protoStats,
-	})
-	if err != nil {
-		return err
-	}
-	if resp.Err != "" {
-		return fmt.Errorf(resp.Err)
-	}
-	return nil
-}
-
-func (m *GRPCClient) Delete(key string) error {
-	resp, err := m.client.Delete(context.Background(), &proto.DeleteRequest{
-		Key: key,
-	})
-	if err != nil {
-		return err
-	}
-	if resp.Err != "" {
-		return fmt.Errorf(resp.Err)
-	}
-	return nil
-}
+var _ proto.PluginServer = &GRPCServer{}
 
 // GRPCServer is the gRPC server that the GRPCClient talks to.
 type GRPCServer struct {
 	// This is the real implementation
-	Impl Autoscaler
+	Impl Plugin
 
 	broker *plugin.GRPCBroker
 }
 
-func (m *GRPCServer) Create(ctx context.Context, req *proto.CreateRequest) (*proto.CreateResponse, error) {
-	conn, err := m.broker.Dial(req.ClusterServer)
+func (m *GRPCServer) Event(ctx context.Context, req *proto.EventRequest) (*proto.Empty, error) {
+	var o Object
+	switch v := req.ObjectOneof.(type) {
+	case *proto.EventRequest_Autoscaler:
+		o = (*Autoscaler)(v.Autoscaler)
+	case *proto.EventRequest_Pod:
+		o = (*Pod)(v.Pod)
+	default:
+		return nil, fmt.Errorf("unknown type: %T", req.ObjectOneof)
+	}
+	err := m.Impl.Event(req.Partition, req.Time, req.Type, o)
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
+	return &proto.Empty{}, nil
+}
 
-	c := &GRPCClusterClient{proto.NewClusterClient(conn)}
-	key, err := m.Impl.Create(req.Yaml, c)
+func (m *GRPCServer) Stat(ctx context.Context, req *proto.StatRequest) (*proto.Empty, error) {
+	err := m.Impl.Stat(req.Partition, req.Stat)
 	if err != nil {
-		return &proto.CreateResponse{
-			Err: err.Error(),
-		}, nil
+		return nil, err
 	}
-	return &proto.CreateResponse{
-		Key: key,
-	}, nil
+	return &proto.Empty{}, nil
 }
 
 func (m *GRPCServer) Scale(ctx context.Context, req *proto.ScaleRequest) (*proto.ScaleResponse, error) {
-	rec, err := m.Impl.Scale(req.Key)
-	if err != nil {
-		return &proto.ScaleResponse{
-			Err: err.Error(),
-		}, nil
-	}
-	return &proto.ScaleResponse{
-		Rec: rec,
-	}, nil
-}
-
-func (m *GRPCServer) Stat(ctx context.Context, req *proto.StatRequest) (*proto.StatResponse, error) {
-	stats := make([]*Stat, len(req.Stat))
-	for i, s := range req.Stat {
-		stats[i] = &Stat{
-			Time:    s.Time,
-			PodName: s.PodName,
-			Metric:  s.Metric,
-			Value:   s.Value,
-		}
-	}
-	err := m.Impl.Stat(stats)
-	if err != nil {
-		return &proto.StatResponse{
-			Err: err.Error(),
-		}, nil
-	}
-	return &proto.StatResponse{}, nil
-}
-
-func (m *GRPCServer) Delete(ctx context.Context, req *proto.DeleteRequest) (*proto.DeleteResponse, error) {
-	err := m.Impl.Delete(req.Key)
-	if err != nil {
-		return &proto.DeleteResponse{
-			Err: err.Error(),
-		}, nil
-	}
-	return &proto.DeleteResponse{}, nil
-}
-
-// GRPCClusterClient is an implementation of Cluster that talks over RPC.
-type GRPCClusterClient struct {
-	client proto.ClusterClient
-}
-
-func (m *GRPCClusterClient) ListPods() (pods []*Pod, err error) {
-	resp, err := m.client.ListPods(context.Background(), &proto.ListPodsRequest{})
+	rec, err := m.Impl.Scale(req.Partition, req.Time)
 	if err != nil {
 		return nil, err
 	}
-	if resp.Err != "" {
-		return nil, fmt.Errorf(resp.Err)
-	}
-	pods = make([]*Pod, len(resp.Pod))
-	for i, p := range resp.Pod {
-		pods[i] = &Pod{
-			Name:           p.Name,
-			State:          p.State,
-			LastTransition: p.LastTransition,
-			CpuRequest:     p.CpuRequest,
-		}
-	}
-	return pods, nil
-}
-
-// GRPCClusterServer is the gRPC server that GRPCClusterClient talks to.
-type GRPCClusterServer struct {
-	// This is the real implementation
-	Impl Cluster
-}
-
-func (m *GRPCClusterServer) ListPods(ctx context.Context, req *proto.ListPodsRequest) (*proto.ListPodsResponse, error) {
-	pods, err := m.Impl.ListPods()
-	if err != nil {
-		return &proto.ListPodsResponse{
-			Err: err.Error(),
-		}, nil
-	}
-	protoPods := make([]*proto.Pod, len(pods))
-	for i, p := range pods {
-		protoPods[i] = &proto.Pod{
-			Name:           p.Name,
-			State:          p.State,
-			LastTransition: p.LastTransition,
-			CpuRequest:     p.CpuRequest,
-		}
-	}
-	return &proto.ListPodsResponse{
-		Pod: protoPods,
+	return &proto.ScaleResponse{
+		Rec: rec,
 	}, nil
 }

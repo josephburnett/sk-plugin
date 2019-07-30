@@ -12,7 +12,7 @@ import (
 var Handshake = plugin.HandshakeConfig{
 	ProtocolVersion:  1,
 	MagicCookieKey:   "SKENARIO_PLUGIN",
-	MagicCookieValue: "skenario",
+	MagicCookieValue: "skplug",
 }
 
 // PluginMap is the map of plugins we can dispense.
@@ -20,30 +20,11 @@ var PluginMap = map[string]plugin.Plugin{
 	"autoscaler": &AutoscalerPlugin{},
 }
 
-type Pod struct {
-	Name           string
-	State          string
-	LastTransition int64
-	CpuRequest     int32
-}
-
-type Cluster interface {
-	ListPods() (pods []*Pod, err error)
-}
-
-type Stat struct {
-	Time    int64
-	PodName string
-	Metric  string
-	Value   int32
-}
-
-// Autoscaler is the interface that we're exposing as a plugin.
-type Autoscaler interface {
-	Create(yaml string, c Cluster) (key string, err error)
-	Scale(key string) (rec int32, err error)
-	Stat(stat []*Stat) error
-	Delete(key string) error
+// Plugin is the interface that we're exposing as a plugin.
+type Plugin interface {
+	Event(partition string, time int64, typ proto.EventType, object Object) error
+	Stat(partition string, stat []*proto.Stat) error
+	Scale(partition string, time int64) (rec int32, err error)
 }
 
 // This is the implementation of plugin.Plugin so we can serve/consume this.
@@ -53,11 +34,11 @@ type AutoscalerPlugin struct {
 	plugin.NetRPCUnsupportedPlugin
 	// Concrete implementation, written in Go. This is only used for plugins
 	// that are written in Go.
-	Impl Autoscaler
+	Impl Plugin
 }
 
 func (p *AutoscalerPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error {
-	proto.RegisterAutoscalerServer(s, &GRPCServer{
+	proto.RegisterPluginServer(s, &GRPCServer{
 		Impl:   p.Impl,
 		broker: broker,
 	})
@@ -66,7 +47,7 @@ func (p *AutoscalerPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server)
 
 func (p *AutoscalerPlugin) GRPCClient(ctx context.Context, broker *plugin.GRPCBroker, c *grpc.ClientConn) (interface{}, error) {
 	return &GRPCClient{
-		client: proto.NewAutoscalerClient(c),
+		client: proto.NewPluginClient(c),
 		broker: broker,
 	}, nil
 }
